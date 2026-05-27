@@ -8,6 +8,7 @@ from pygame.sprite import Group
 from settings import Settings
 from ship import Ship
 import game_functions as gf
+from game_stats import GameStats
 
 
 def run_game():
@@ -18,6 +19,7 @@ def run_game():
         (config.screen_width,config.screen_height)
         )
     pygame.display.set_caption("Alien invasion")
+    stats = GameStats(config)
 
     # Ship creation
     ship = Ship(config,screen)
@@ -34,10 +36,11 @@ def run_game():
     # Launch main game cycle.
     while True:
         gf.check_events(config,screen,ship,bullets)
-        ship.update()
-        gf.update_bullets(config, screen, ship, bullets, aliens)
-        gf.update_aliens(config, aliens)
-        gf.update_screen(config, screen, ship, aliens, bullets)
+        if stats.game_active:
+            ship.update()
+            gf.update_bullets(config, screen, ship, bullets, aliens)
+            gf.update_aliens(config, stats, screen, ship, aliens, bullets)
+            gf.update_screen(config, screen, ship, aliens, bullets)
 
 run_game()
 
