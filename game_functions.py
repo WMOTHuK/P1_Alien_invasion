@@ -85,6 +85,24 @@ def update_screen(config, screen, ship, aliens, bullets ):
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)
- 
-    # Display last loaded screen
+     # Display last loaded screen
     pygame.display.flip()
+
+
+def check_fleet_edges(config,aliens):
+    """Checks if fleet reaches borders"""
+    for alien in aliens.sprites():
+        if alien.check_edges():
+           change_fleet_direction(config, aliens)
+           break
+
+def change_fleet_direction(config,aliens):
+    """changes direction of the fleet"""
+    for alien in aliens.sprites():
+        alien.rect.y += config.fleet_drop_speed
+    config.fleet_direction *= -1
+
+def update_aliens(config, aliens):
+    """Refreshes position of all aliens"""
+    check_fleet_edges(config, aliens)
+    aliens.update()
