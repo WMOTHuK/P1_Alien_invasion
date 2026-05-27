@@ -2,6 +2,7 @@
 #Standart imports
 
 import pygame
+from pygame.sprite import Group
 
 #Local imports
 from settings import Settings
@@ -17,12 +18,19 @@ def run_game():
         (config.screen_width,config.screen_height)
         )
     pygame.display.set_caption("Alien invasion")
+
+    # Ship creation
     ship = Ship(config,screen)
+
+    #Bullet grouping
+    bullets = Group()
 
     # Launch main game cycle.
     while True:
-        gf.check_events(ship)
+        gf.check_events(config,screen,ship,bullets)
         ship.update()
-        gf.update_screen(config, ship, screen)
+        gf.update_bullets(bullets)
+        gf.update_screen(config, screen, ship, bullets)
+
 run_game()
 
