@@ -37,12 +37,20 @@ def check_events(config, screen, ship, bullets):
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
 
-def update_bullets(bullets):
+def update_bullets(config, screen, ship, bullets, aliens):
         bullets.update()
         # Delete bullets, that are out of screen
         for bullet in bullets.copy():
             if bullet.rect.bottom <= 0:
                 bullets.remove(bullet)
+        check_bullet_alien_collisions(config, screen, ship, aliens, bullets)
+
+def check_bullet_alien_collisions(config, screen, ship, aliens, bullets):
+        # Check bullet and aliens collisions
+        collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+        if len(aliens) == 0:
+            bullets.empty()
+            create_fleet(config, screen, ship, aliens)
 
 def create_fleet(config, screen, ship, aliens):
     """Creates alien fleet"""
