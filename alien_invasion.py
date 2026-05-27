@@ -25,12 +25,18 @@ def run_game():
     #Bullet grouping
     bullets = Group()
 
+    #Aliens grouping
+    aliens = Group()
+
+    #Alien fleet creation
+    gf.create_fleet(config, screen, ship, aliens)
+
     # Launch main game cycle.
     while True:
         gf.check_events(config,screen,ship,bullets)
         ship.update()
         gf.update_bullets(bullets)
-        gf.update_screen(config, screen, ship, bullets)
+        gf.update_screen(config, screen, ship, aliens, bullets)
 
 run_game()
 
