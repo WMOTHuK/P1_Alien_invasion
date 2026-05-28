@@ -28,7 +28,7 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
-def check_events(config, screen, ship, bullets):
+def check_events(config, screen, stats, play_button, ship, bullets, aliens):
     """Checks key and mouse events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -37,6 +37,13 @@ def check_events(config, screen, ship, bullets):
             check_keydown_events(event, config, screen, ship, bullets)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(stats, aliens, bullets, config,
+                      screen, ship, 
+                      play_button, mouse_x, mouse_y)
+            print('Mouse hit')
+
 
 def update_bullets(config, screen, ship, bullets, aliens):
         bullets.update()
@@ -87,15 +94,18 @@ def create_alien(config, screen, alien_number, aliens, row_number):
                         + alien.rect.height * row_number * 1.5)
         aliens.add(alien)
 
-def update_screen(config, screen, ship, aliens, bullets ):
+def update_screen(config, screen, stats, ship, aliens, bullets, play_button ):
     """Updates a screen"""
     screen.fill(config.bg_color)
-    for bullet in bullets.sprites():
-        bullet.draw_bullet()
-    ship.blitme()
-    aliens.draw(screen)
-     # Display last loaded screen
-    pygame.display.flip()
+    if stats.game_active: # Draw screen objects while game active        
+        for bullet in bullets.sprites():
+            bullet.draw_bullet()
+        ship.blitme()
+        aliens.draw(screen)
+    else: # Draw play button while game inactive
+        play_button.draw_button()
+    # Display last loaded screen
+    pygame.display.flip()     
 
 
 def check_fleet_edges(config,aliens):
@@ -145,3 +155,17 @@ def update_aliens(config, stats, screen, ship, aliens, bullets):
     if pygame.sprite.spritecollideany(ship, aliens):
         ship_hit(config, stats, screen, ship, aliens, bullets)
     check_aliens_bottom(config, stats, screen, ship, aliens, bullets)
+
+def check_play_button(stats, aliens, bullets, config,
+                      screen, ship, 
+                      play_button, mouse_x, mouse_y):
+    """Launches new game on play button click"""
+    if play_button.rect.collidepoint(mouse_x, mouse_y):
+        stats.reset_stats()
+        stats.game_active = True
+        # Deleting aliens and bullets
+        aliens.empty()
+        bullets.empty()
+        # Creating new fleet
+        create_fleet(config, screen, ship, aliens)
+        ship.center_ship()
