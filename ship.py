@@ -1,6 +1,7 @@
 """ Ship related classes"""
 #Standard imports
 import pygame
+from pygame.sprite import Sprite
 
 
 class Ship():
@@ -38,3 +39,15 @@ class Ship():
     def center_ship(self):
         """Places a ship at bottom's center"""
         self.center = self.screen_rect.centerx
+
+class Small_ship(Sprite):
+    """small ship for ship count"""
+    def __init__(self, config, screen):
+        """Initializes and small ship and it's position"""
+        super(Small_ship, self).__init__()
+        self.screen = screen
+        self.config = config
+
+        # Loads an alien image
+        self.image = pygame.image.load('images/small_ship.bmp')
+        self.rect = self.image.get_rect()

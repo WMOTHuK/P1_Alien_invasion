@@ -10,6 +10,7 @@ from ship import Ship
 import game_functions as gf
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 def run_game():
     """Initializes game and creates a screen"""
@@ -23,8 +24,9 @@ def run_game():
     #Creating PLAY button
     play_button = Button(config, screen, "Play")
 
-    # Reading initial game stats
+    # Creating initial game stats and scoreboard
     stats = GameStats(config)
+    sb = Scoreboard(config, screen, stats)
 
     # Ship creation
     ship = Ship(config,screen)
@@ -41,12 +43,12 @@ def run_game():
     # Launch main game cycle.
     while True:
         gf.check_events(config,screen, stats, play_button, 
-                        ship, bullets, aliens)
+                        ship, bullets, aliens, sb)
         if stats.game_active:
             ship.update()
-            gf.update_bullets(config, screen, ship, bullets, aliens)
-            gf.update_aliens(config, stats, screen, ship, aliens, bullets)
-        gf.update_screen(config, screen, stats, ship, 
+            gf.update_bullets(config, screen, ship, bullets, aliens, stats, sb)
+            gf.update_aliens(config, stats, screen, ship, aliens, bullets, sb)
+        gf.update_screen(config, screen, stats, sb, ship, 
                             aliens, bullets, play_button)
 
 run_game()
